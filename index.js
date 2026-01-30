@@ -2,14 +2,6 @@ require('dotenv').config({ silent: true });
 const express = require('express');
 const cors = require('cors');
 
-console.log('Starting server...');
-console.log('All env vars:', Object.keys(process.env));
-console.log('Environment check:', {
-  SUPABASE_URL: process.env.SUPABASE_URL,
-  SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY ? 'SET' : 'MISSING',
-  PORT: process.env.PORT
-});
-
 const registerRoutes = require('./routes/register');
 const validateRoutes = require('./routes/validate');
 const voteRoutes = require('./routes/vote');
