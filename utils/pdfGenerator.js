@@ -13,6 +13,9 @@ const generateCertificate = async (userData, type) => {
       templatePath = path.join(__dirname, '..', 'Alumni.png');
     }
 
+    console.log('Template path:', templatePath);
+    console.log('File exists:', fs.existsSync(templatePath));
+    
     const image = await Jimp.read(templatePath);
     const font = await Jimp.loadFont(Jimp.FONT_SANS_64_BLACK);
 
