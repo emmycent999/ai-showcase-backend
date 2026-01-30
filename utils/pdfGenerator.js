@@ -1,10 +1,9 @@
-const { createCanvas, loadImage } = require('canvas');
+const Jimp = require('jimp');
 const fs = require('fs');
 const path = require('path');
 
 const generateCertificate = async (userData, type) => {
   try {
-    // Determine which certificate template to use
     let templatePath;
     if (type === 'participant') {
       templatePath = path.join(__dirname, '..', '..', 'Participant.png');
@@ -14,26 +13,23 @@ const generateCertificate = async (userData, type) => {
       templatePath = path.join(__dirname, '..', '..', 'Alumni.png');
     }
 
-    // Load the certificate template
-    const image = await loadImage(templatePath);
-    const canvas = createCanvas(image.width, image.height);
-    const ctx = canvas.getContext('2d');
+    const image = await Jimp.read(templatePath);
+    const font = await Jimp.loadFont(Jimp.FONT_SANS_64_BLACK);
 
-    // Draw the certificate template
-    ctx.drawImage(image, 0, 0);
+    const centerX = image.bitmap.width / 2;
+    const centerY = image.bitmap.height / 2;
 
-    // Configure text styling for name
-    ctx.font = 'bold 100px Raleway, Georgia, serif';
-    ctx.fillStyle = '#000000';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
+    image.print(
+      font,
+      0,
+      centerY - 32,
+      {
+        text: userData.full_name,
+        alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER
+      },
+      image.bitmap.width
+    );
 
-    // Draw the name in the center (adjust Y position as needed)
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-    ctx.fillText(userData.full_name, centerX, centerY);
-
-    // Save to temp file
     const fileName = `certificate_${userData.id}_${Date.now()}.png`;
     const outputPath = path.join(__dirname, '..', 'temp', fileName);
 
@@ -41,9 +37,7 @@ const generateCertificate = async (userData, type) => {
       fs.mkdirSync(path.join(__dirname, '..', 'temp'));
     }
 
-    const buffer = canvas.toBuffer('image/png');
-    fs.writeFileSync(outputPath, buffer);
-
+    await image.writeAsync(outputPath);
     return outputPath;
   } catch (error) {
     console.error('Certificate generation error:', error);

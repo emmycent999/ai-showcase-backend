@@ -2,12 +2,6 @@ require('dotenv').config({ silent: true });
 const express = require('express');
 const cors = require('cors');
 
-// Verify critical env vars
-if (!process.env.SUPABASE_URL) {
-  console.error('SUPABASE_URL is missing!');
-  process.exit(1);
-}
-
 const registerRoutes = require('./routes/register');
 const validateRoutes = require('./routes/validate');
 const voteRoutes = require('./routes/vote');

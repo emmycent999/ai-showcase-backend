@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const supabase = require('../utils/supabase');
+const getSupabase = require('../utils/supabase');
+const supabase = getSupabase();
 const { generateCertificate } = require('../utils/pdfGenerator');
 const { sendEmail } = require('../utils/email');
 const fs = require('fs');
