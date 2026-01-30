@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const getSupabase = require('../utils/supabase');
-const supabase = getSupabase();
 const { generateCertificate } = require('../utils/pdfGenerator');
 const { sendEmail } = require('../utils/email');
 const fs = require('fs');
@@ -13,6 +12,7 @@ router.post('/send', async (req, res) => {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
+    const supabase = getSupabase();
     const { userId } = req.body;
     const { data: user, error } = await supabase
       .from('registrations')
@@ -48,6 +48,7 @@ router.post('/send-all', async (req, res) => {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
+    const supabase = getSupabase();
     const { data: users } = await supabase.from('registrations').select('*');
     
     for (const user of users) {

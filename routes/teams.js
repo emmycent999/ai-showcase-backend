@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const getSupabase = require('../utils/supabase');
-const supabase = getSupabase();
 
 const authenticate = (req, res, next) => {
   const { email, password } = req.headers;
@@ -15,6 +14,7 @@ const authenticate = (req, res, next) => {
 
 router.get('/', async (req, res) => {
   try {
+    const supabase = getSupabase();
     const { data, error } = await supabase
       .from('teams')
       .select('*')
@@ -29,6 +29,7 @@ router.get('/', async (req, res) => {
 
 router.post('/', authenticate, async (req, res) => {
   try {
+    const supabase = getSupabase();
     const { name, category, description, color } = req.body;
     
     const { data, error } = await supabase
@@ -46,6 +47,7 @@ router.post('/', authenticate, async (req, res) => {
 
 router.delete('/:id', authenticate, async (req, res) => {
   try {
+    const supabase = getSupabase();
     const { id } = req.params;
     
     const { error } = await supabase

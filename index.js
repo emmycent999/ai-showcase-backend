@@ -2,6 +2,14 @@ require('dotenv').config({ silent: true });
 const express = require('express');
 const cors = require('cors');
 
+console.log('Starting server...');
+console.log('All env vars:', Object.keys(process.env));
+console.log('Environment check:', {
+  SUPABASE_URL: process.env.SUPABASE_URL,
+  SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY ? 'SET' : 'MISSING',
+  PORT: process.env.PORT
+});
+
 const registerRoutes = require('./routes/register');
 const validateRoutes = require('./routes/validate');
 const voteRoutes = require('./routes/vote');
@@ -22,6 +30,10 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/certificate', certificateRoutes);
 app.use('/api/teams', teamsRoutes);
 
-app.listen(PORT, () => {
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok' });
+});
+
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });

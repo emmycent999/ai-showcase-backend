@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const getSupabase = require('../utils/supabase');
-const supabase = getSupabase();
 
 const authenticate = (req, res, next) => {
   const { email, password } = req.headers;
@@ -15,6 +14,7 @@ const authenticate = (req, res, next) => {
 
 router.get('/registrations', authenticate, async (req, res) => {
   try {
+    const supabase = getSupabase();
     const { type, search } = req.query;
     let query = supabase.from('registrations').select('*');
 
@@ -32,6 +32,7 @@ router.get('/registrations', authenticate, async (req, res) => {
 
 router.get('/votes', authenticate, async (req, res) => {
   try {
+    const supabase = getSupabase();
     const { data, error } = await supabase.from('votes').select('*');
     if (error) throw error;
 

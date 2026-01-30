@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const getSupabase = require('../utils/supabase');
-const supabase = getSupabase();
 
 router.post('/', async (req, res) => {
   try {
+    const supabase = getSupabase();
     const { email, team_name } = req.body;
 
     const { data: user } = await supabase
