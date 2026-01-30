@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const getSupabase = require('../utils/supabase');
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() });
 
 const authenticate = (req, res, next) => {
   const { email, password } = req.headers;
@@ -27,14 +29,34 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.post('/', authenticate, async (req, res) => {
+router.post('/', authenticate, upload.single('logo'), async (req, res) => {
   try {
     const supabase = getSupabase();
     const { name, category, description, color } = req.body;
     
+    let logoUrl = null;
+    
+    if (req.file) {
+      const fileName = `${Date.now()}-${req.file.originalname}`;
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('team-logos')
+        .upload(fileName, req.file.buffer, {
+          contentType: req.file.mimetype,
+          upsert: false
+        });
+      
+      if (uploadError) throw uploadError;
+      
+      const { data: { publicUrl } } = supabase.storage
+        .from('team-logos')
+        .getPublicUrl(fileName);
+      
+      logoUrl = publicUrl;
+    }
+    
     const { data, error } = await supabase
       .from('teams')
-      .insert([{ name, category, description, color }])
+      .insert([{ name, category, description, color, logo_url: logoUrl }])
       .select()
       .single();
     
