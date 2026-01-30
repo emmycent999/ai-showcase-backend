@@ -6,11 +6,11 @@ const generateCertificate = async (userData, type) => {
   try {
     let templatePath;
     if (type === 'participant') {
-      templatePath = path.join(__dirname, '..', '..', 'Participant.png');
+      templatePath = path.join(__dirname, '..', 'Participant.png');
     } else if (type === 'organizer') {
-      templatePath = path.join(__dirname, '..', '..', 'Organizers.png');
+      templatePath = path.join(__dirname, '..', 'Organizers.png');
     } else if (type === 'alumni') {
-      templatePath = path.join(__dirname, '..', '..', 'Alumni.png');
+      templatePath = path.join(__dirname, '..', 'Alumni.png');
     }
 
     const image = await Jimp.read(templatePath);
